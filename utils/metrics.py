@@ -52,7 +52,7 @@ def log_tensorboard(writer, tag, metrics, epoch, source, target):
             plt.rcParams.update({"font.size": 14})
             sns.heatmap(
                 confusion_matrix.cpu(),
-                annot=False,
+                annot=True,
                 fmt=".2f",
                 cmap="Blues",
                 ax=ax,

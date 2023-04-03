@@ -18,34 +18,28 @@ class DANNModel(torch.nn.Module):
     def __init__(self):
         super(DANNModel, self).__init__()
 
-        """self.feature = torch.nn.Sequential(
-            torch.nn.Conv2d(3, 64, kernel_size=5),
-            torch.nn.BatchNorm2d(64),
-            torch.nn.MaxPool2d(2),
+        self.feature = torch.nn.Sequential(
+            torch.nn.Linear(149, 64),
+            torch.nn.BatchNorm1d(64),
             torch.nn.ReLU(True),
-            torch.nn.Conv2d(64, 50, kernel_size=5),
-            torch.nn.BatchNorm2d(50),
-            torch.nn.Dropout2d(),
-            torch.nn.MaxPool2d(2),
+            torch.nn.Linear(64, 32),
+            torch.nn.BatchNorm1d(32),
             torch.nn.ReLU(True),
-        )"""
-        self.feature = resnet50(weights=ResNet50_Weights.DEFAULT)
-        self.feature = torch.nn.Sequential(*(list(self.feature.children())[:-1]))
-
+        )
+        
         self.class_classifier = torch.nn.Sequential(
-            torch.nn.Linear(2048, 1024),
-            torch.nn.BatchNorm1d(1024),
-            torch.nn.ReLU(True),
-            # torch.nn.Dropout1d(),
-            torch.nn.Linear(1024, 512),
+            torch.nn.Linear(32, 512),
             torch.nn.BatchNorm1d(512),
             torch.nn.ReLU(True),
-            torch.nn.Linear(512, 31),
+            torch.nn.Linear(512, 128),
+            torch.nn.BatchNorm1d(128),
+            torch.nn.ReLU(True),
+            torch.nn.Linear(128, 5),
             torch.nn.LogSoftmax(dim=1),
         )
 
         self.domain_classifier = torch.nn.Sequential(
-            torch.nn.Linear(2048, 512),
+            torch.nn.Linear(32, 512),
             torch.nn.BatchNorm1d(512),
             torch.nn.ReLU(True),
             torch.nn.Linear(512, 2),

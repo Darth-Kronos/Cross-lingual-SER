@@ -68,7 +68,7 @@ def test(args, dataset_name, metrics, writer, tag, epoch):
         batch_size = len(t_label)
 
         if device == "cuda":
-            t_img = t_img.to(device)
+            t_img = t_img.to(device).to(torch.float32)
             t_label = t_label.to(device)
 
         class_output, _ = net(input=t_img, alpha=alpha)

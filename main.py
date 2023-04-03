@@ -79,8 +79,8 @@ def main(args):
         log_dir = f"{args.tensorboard_log_dir}/{source}_{target}_{args.encoder}"
     writer = SummaryWriter(log_dir=log_dir)  # create a TensorBoard writer
     d_t_train_metrics, d_t_val_metrics = set_metrics(device, num_classes=2)
-    c_s_train_metrics, c_s_val_metrics = set_metrics(device, num_classes=31)
-    c_t_train_metrics, c_t_val_metrics = set_metrics(device, num_classes=31)
+    c_s_train_metrics, c_s_val_metrics = set_metrics(device, num_classes=5)
+    c_t_train_metrics, c_t_val_metrics = set_metrics(device, num_classes=5)
 
     # training
     results = []
@@ -109,7 +109,7 @@ def main(args):
             domain_label = torch.zeros(batch_size).long()
 
             if device == "cuda":
-                s_img = s_img.to(device)
+                s_img = s_img.to(device).to(torch.float32)
                 s_label = s_label.to(device)
                 domain_label = domain_label.to(device)
 
@@ -130,7 +130,7 @@ def main(args):
             domain_label = torch.ones(batch_size).long()
 
             if device == "cuda":
-                t_img = t_img.to(device)
+                t_img = t_img.to(device).to(torch.float32)
                 t_label = t_label.to(device)
                 domain_label = domain_label.to(device)
 
@@ -190,10 +190,10 @@ def main(args):
         writer.add_scalar("RAM usage", ram_usage, epoch)
 
         # Log model parameters
-        for name, param in net.named_parameters():
-            writer.add_histogram(
-                f"Parameters/{name}", param.clone().cpu().data.numpy(), epoch
-            )
+        #for name, param in net.named_parameters():
+        #    writer.add_histogram(
+        #        f"Parameters/{name}", param.clone().cpu().data.numpy(), epoch
+        #    )
 
         print("\n")
         accu_s, f1_s, c_s_val_metrics = test(
